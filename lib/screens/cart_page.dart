@@ -15,8 +15,9 @@ class CartPage extends StatefulWidget {
 class _CartPageState extends State<CartPage> {
   // ignore: unused_field
   final CollectionReference _productsRef =
-      FirebaseFirestore.instance.collection("users");
+      FirebaseFirestore.instance.collection("Users");
   FirebaseServices _firebaseServices = FirebaseServices();
+  
 
   @override
   Widget build(BuildContext context) {

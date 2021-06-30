@@ -19,9 +19,6 @@ class ProductPage extends StatefulWidget {
 class _ProductPageState extends State<ProductPage> {
   FirebaseServices _firebaseServices = FirebaseServices();
   
-
-   
-
   String _selectedProductSize = "0";
 
   Future _addToCart() {
@@ -32,8 +29,20 @@ class _ProductPageState extends State<ProductPage> {
         .set({"size": _selectedProductSize});
   }
 
-  final SnackBar _snackBar = SnackBar(
+  Future _addToSave(){
+    return _firebaseServices.usersRef
+        .doc(_firebaseServices.getUserId())
+        .collection("Save")
+        .doc(widget.productId)
+        .set({"size": _selectedProductSize});
+  }
+
+  final SnackBar _snackBarCart = SnackBar(
     content: Text("Product added to the cart"),
+  );
+
+  final SnackBar _snackBarSave = SnackBar(
+    content: Text("Product added to Save"),
   );
 
   @override
@@ -125,26 +134,34 @@ class _ProductPageState extends State<ProductPage> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Container(
-                            width: 65.0,
-                            height: 65.0,
-                            decoration: BoxDecoration(
-                              color: Color(0xFFDCDCDC),
-                              borderRadius: BorderRadius.circular(12.0),
-                            ),
-                            alignment: Alignment.center,
-                            child: Image(
-                              image: AssetImage(
-                                "assets/images/tab_saved.png",
+                          
+                             GestureDetector(
+                              onTap: () async {
+                                await _addToSave();
+                                Scaffold.of(context).showSnackBar(_snackBarSave);
+                              },
+                              child: Container(
+                                width: 65.0,
+                                height: 65.0,
+                                decoration: BoxDecoration(
+                                  color: Color(0xFFDCDCDC),
+                                  borderRadius: BorderRadius.circular(12.0),
+                                ),
+                                alignment: Alignment.center,
+                                child: Image(
+                                  image: AssetImage(
+                                    "assets/images/tab_saved.png",
+                                  ),
+                                  height: 22.0,
+                                ),
                               ),
-                              height: 22.0,
                             ),
-                          ),
+                          
                           Expanded(
                             child: GestureDetector(
                               onTap: () async {
                                 await _addToCart();
-                                Scaffold.of(context).showSnackBar(_snackBar);
+                                Scaffold.of(context).showSnackBar(_snackBarCart);
                               },
                               child: Container(
                                 height: 65.0,
